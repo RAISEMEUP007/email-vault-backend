@@ -3,15 +3,21 @@ import pymysql
 import hashlib
 import datetime
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env files
+load_dotenv('local.env')
+load_dotenv('secrets.env')
 
 app = Flask(__name__)
 
-# Database configuration
+# Database configuration from environment variables
 db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'password',
-    'database': 'email_vault'
+    'host': os.getenv('DB_HOST'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'database': os.getenv('DB_NAME')
 }
 
 # Enable CORS for all routes
@@ -29,8 +35,7 @@ def get_db_connection():
 # Signup Route
 @app.route('/signup', methods=['POST'])
 def signup():
-    data = request.json  # Get the JSON data from the request
-    print(data)
+    data = request.json
 
     # Extracting user data from the request
     first_name = data.get('firstName')
@@ -90,7 +95,6 @@ def signin():
             (email, hashed_password)
         )
         user = cursor.fetchone()
-        print (user)
 
         cursor.close()
         connection.close()
