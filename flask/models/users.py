@@ -31,7 +31,7 @@ def create_user(first_name, last_name, company_name, email, password):
                 'email' : email,
                 'password' : hashed_password,
                 'created_at' : datetime.datetime.now(),
-                'updated_at' : datetime.datetime.now(),
+                'changed_on' : datetime.datetime.now(),
             })
             return result
         except Exception as e:

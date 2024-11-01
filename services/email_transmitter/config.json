@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "provider": "mailjet",
+            "sourceEmail": "emailvault@ecortest.com",
+            "errorReportingEmail": "emailvault@ecortest.com"
+        }
+    ],
+    "events": {
+        "USER_CREATED": {
+            "subject": "Welcome {{var:recipient_name}}",
+            "templateName": "Welcome (PROD and TEST)",
+            "id": {
+                "mailjet": 6410451
+            }
+        }
+    }
+}

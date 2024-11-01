@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .  # The directory containing the Dockerfile
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env.secrets  # Load environment variables from secrets.env
+    environment:
+      - FLASK_APP=flask/app.py
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - RABBITMQ_HOST=rabbitmq  # Add RabbitMQ host
+    ports:
+      - "5000:5000"
+    depends_on:
+      - rabbitmq  # Add RabbitMQ as a dependency
+#      - email_transmitter
+
+  rabbitmq:
+    image: rabbitmq:management  # Use RabbitMQ with management plugin for easier monitoring
+    container_name: project_rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: user  # Set your RabbitMQ username
+      RABBITMQ_DEFAULT_PASS: password  # Set your RabbitMQ password
+      RABBITMQ_LOGS: none
+    ports:
+      - "5672:5672"  # RabbitMQ default port
+      - "15672:15672"  # Management UI port
+
+  email_transmitter:
+    image: ecorrouge/email-transmitter:latest
+    container_name: project_email_transmitter
+    restart: unless-stopped
+    env_file:
+      - ./.env.secrets
+    environment:
+      - RABBITMQ_HOST=rabbitmq  # Add RabbitMQ to environment variables if needed
+    volumes:
+      - ./services/email_transmitter/config.json:/app/src/services/email_transmitter/src/config.json
+    depends_on:
+      - rabbitmq

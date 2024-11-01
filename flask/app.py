@@ -5,7 +5,7 @@ from routes.router import register_blueprint
 
 load_dotenv('test.env')
 load_dotenv('local.env')
-load_dotenv('secrets.env')
+load_dotenv('.env.secrets')
 
 app = Flask(__name__)
 
